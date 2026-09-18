@@ -77,6 +77,7 @@
           <label class="full-label">Overlay text <input id="overlay-text" type="text" maxlength="120" placeholder="Optional title or caption"></label>
           <label>Text color <input id="overlay-color" type="color" value="#ffffff"></label>
           <label>Text size <input id="overlay-size" type="range" min="20" max="96" step="2" value="48"></label>
+          <label class="position-label">Text height <input id="overlay-position" type="range" min="5" max="95" step="1" value="85"></label>
           <label id="background-control">Background <input id="clip-background" type="color" value="#111827"></label>
         </section>
         <button id="add-blank" class="wide-button">＋ Add blank scene</button>
@@ -138,7 +139,7 @@
       <h2>Using My Movie Maker</h2>
       <p><strong>Add media:</strong> use the + button in Your media, then click the small + beside a file to place it on the timeline. Drag clips to reorder them.</p>
       <p><strong>Edit:</strong> select a timeline clip. The right ribbon exposes trim times, speed, rotation, overlay text, split, and delete. Drag a clip's pale end handles for quick trimming.</p>
-      <p><strong>Voice-over:</strong> put the playhead where narration should begin, click Record voice-over, and speak while the movie plays. Recording replaces the current added-audio track.</p>
+      <p><strong>Voice-over:</strong> put the playhead where narration should begin, click Record voice-over, and speak while the movie plays. Recordings are added as separate movable audio blocks.</p>
       <p><strong>Files:</strong> MP4/WebM video and MP3/WAV/M4A/OGG audio generally work when their codecs are supported by Chrome or Edge. Media never leaves your computer. Project JSON saves edit instructions, so source files must be reconnected when reopening.</p>
       <p><strong>Export:</strong> MP4 depends on the browser's native H.264 support; WebM is the fallback.</p>
       <div class="dialog-actions"><button value="close" class="primary">Got it</button></div>

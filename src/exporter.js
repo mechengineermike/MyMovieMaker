@@ -53,8 +53,10 @@ export class BrowserExporter {
         ctx.save(); ctx.translate(width / 2, height / 2); ctx.rotate(rotation * Math.PI / 180);
         ctx.drawImage(video, -sourceWidth * fit / 2, -sourceHeight * fit / 2, sourceWidth * fit, sourceHeight * fit); ctx.restore();
       } else video.pause();
-      if (clip.text) { ctx.save(); ctx.fillStyle = clip.textColor || '#fff'; ctx.font = `700 ${clip.textSize || 48}px system-ui`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.shadowColor = '#000'; ctx.shadowBlur = 8; ctx.fillText(clip.text, width / 2, height * .9, width * .84); ctx.restore(); }
-      if (state.audio) { const asset = this.library.get(state.audio.assetId), local = state.audio.in + time - state.audio.start; if (asset && local >= state.audio.in && local < state.audio.out) { if (music.src !== asset.url) { music.src = asset.url; music.currentTime = local; await music.play(); } else if (music.paused) await music.play(); } else music.pause(); }
+      if (clip.text) { ctx.save(); ctx.fillStyle = clip.textColor || '#fff'; ctx.font = `700 ${clip.textSize || 48}px system-ui`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.shadowColor = '#000'; ctx.shadowBlur = 8; ctx.fillText(clip.text, width / 2, height * ((clip.textPosition ?? 85) / 100), width * .84); ctx.restore(); }
+      const audioTracks = state.audioTracks || (state.audio ? [state.audio] : []);
+      const activeAudio = [...audioTracks].reverse().find(track => { const local = track.in + time - track.start; return local >= track.in && local < track.out; });
+      if (activeAudio) { const asset = this.library.get(activeAudio.assetId), local = activeAudio.in + time - activeAudio.start; if (asset) { if (music.src !== asset.url) { music.src = asset.url; music.currentTime = local; await music.play(); } else if (music.paused) await music.play(); } } else music.pause();
       onProgress(time / duration); await new Promise(resolve => requestAnimationFrame(resolve));
     }
     video.pause(); music.pause(); recorder.stop(); await stopped; await audioCtx.close();
