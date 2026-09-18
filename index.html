@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#111827">
-  <title>Python Movie Maker</title>
+  <title>My Movie Maker</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><span class="logo">▶</span><span>Python Movie Maker</span></div>
+    <div class="brand"><span class="logo">▶</span><span>My Movie Maker</span></div>
     <nav class="file-actions" aria-label="Project controls">
       <button id="new-project">New</button>
       <button id="open-project">Open project</button>
@@ -57,6 +57,14 @@
           <label>Added audio <input id="music-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
           <label class="check"><input id="music-mute" type="checkbox"> Mute</label>
         </section>
+        <section id="clip-editor" class="clip-editor" aria-label="Selected clip controls" hidden>
+          <div class="clip-editor-title"><strong id="selected-name">Selected clip</strong><span id="selected-length"></span></div>
+          <label>Start <input id="trim-start-input" type="number" min="0" step="0.1"> sec</label>
+          <label>End <input id="trim-end-input" type="number" min="0" step="0.1"> sec</label>
+          <label>Speed <select id="clip-speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1">Normal</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+          <button id="rotate-left" title="Rotate left 90 degrees">↶ Rotate</button>
+          <button id="rotate-right" title="Rotate right 90 degrees">Rotate ↷</button>
+        </section>
       </section>
     </section>
 
@@ -101,9 +109,12 @@
       <label>Quality
         <select id="export-quality"><option value="normal">Normal</option><option value="high">High</option></select>
       </label>
+      <label>Format
+        <select id="export-format"><option value="mp4">MP4 (if supported)</option><option value="webm">WebM</option></select>
+      </label>
       <div id="export-status" class="export-status" hidden><progress id="export-progress" max="1" value="0"></progress><span id="export-message">Preparing…</span></div>
-      <div class="dialog-actions"><button id="export-cancel" value="cancel">Cancel</button><button id="export-start" type="button" class="primary">Export WebM</button></div>
-      <p class="fine-print">Chrome and Edge can reliably create WebM in-browser. MP4 export needs a larger codec engine and is planned as an optional extension.</p>
+      <div class="dialog-actions"><button id="export-cancel" value="cancel">Cancel</button><button id="export-start" type="button" class="primary">Export video</button></div>
+      <p class="fine-print">MP4 uses the browser's native H.264/AAC recorder when available. If this browser cannot create MP4, choose WebM or use a newer Chrome/Edge version.</p>
     </form>
   </dialog>
 
