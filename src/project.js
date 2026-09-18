@@ -10,7 +10,8 @@ export class ProjectStore extends EventTarget{
   reset(){this.replace(fresh())}
   undo(){if(!this.undoStack.length)return;this.redoStack.push(copy(this.state));this.state=this.undoStack.pop();this.notify()}
   redo(){if(!this.redoStack.length)return;this.undoStack.push(copy(this.state));this.state=this.redoStack.pop();this.notify()}
-  addVideo(asset){this.commit(s=>s.clips.push({id:uid(),assetId:asset.id,name:asset.name,in:0,out:asset.duration,sourceDuration:asset.duration,speed:1,rotation:0}))}
+  addVideo(asset){this.commit(s=>s.clips.push({id:uid(),kind:'video',assetId:asset.id,name:asset.name,in:0,out:asset.duration,sourceDuration:asset.duration,speed:1,rotation:0,text:'',textColor:'#ffffff',textSize:48}))}
+  addBlank(){this.commit(s=>s.clips.push({id:uid(),kind:'blank',name:'Blank scene',in:0,out:3,sourceDuration:3600,speed:1,rotation:0,background:'#111827',text:'',textColor:'#ffffff',textSize:48}))}
   setAudio(asset){this.commit(s=>s.audio={id:uid(),assetId:asset.id,name:asset.name,in:0,out:asset.duration,start:0,sourceDuration:asset.duration})}
   deleteClip(id){this.commit(s=>s.clips=s.clips.filter(c=>c.id!==id))}
   split(id,offset){this.commit(s=>{const i=s.clips.findIndex(c=>c.id===id),c=s.clips[i];if(!c)return;const at=c.in+offset;if(at<=c.in+.1||at>=c.out-.1)return;const right={...c,id:uid(),in:at};c.out=at;s.clips.splice(i+1,0,right)})}

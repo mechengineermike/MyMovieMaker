@@ -14,6 +14,9 @@ A small, entirely client-side browser video editor inspired by the simplicity of
 - Human-readable JSON project files with a relink workflow
 - Native MP4 export where supported, with WebM fallback, at original/1080p/720p
 - Per-clip playback speed and 90-degree rotation
+- Per-clip overlay text plus configurable blank color scenes
+- In-browser microphone voice-over recording synchronized to the playhead
+- Right-side editing ribbon and built-in help
 - Static hosting with no backend or build step
 
 ## Export note

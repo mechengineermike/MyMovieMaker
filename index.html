@@ -17,7 +17,9 @@
       <span class="divider"></span>
       <button id="undo" title="Undo (Ctrl+Z)" disabled>Undo</button>
       <button id="redo" title="Redo (Ctrl+Y)" disabled>Redo</button>
+      <button id="help-open">Help</button>
     </nav>
+    <a class="github-link" href="https://github.com/mechengineermike/MyMovieMaker" target="_blank" rel="noopener">GitHub ↗</a>
     <button id="export-open" class="primary">Export video</button>
     <input id="project-input" type="file" accept="application/json,.json" hidden>
   </header>
@@ -27,7 +29,6 @@
       <aside class="media-panel">
         <div class="panel-heading"><h2>Your media</h2><button id="import-media" class="icon-button" title="Import media">＋</button></div>
         <p class="hint">Add videos or one music track. Files stay on this device.</p>
-        <button id="choose-files" class="wide-button">Choose files</button>
         <input id="media-input" type="file" accept="video/*,audio/*" multiple hidden>
         <div id="media-list" class="media-list" aria-live="polite"></div>
       </aside>
@@ -40,9 +41,15 @@
             <p>Drop video files here or choose them from your computer.</p>
             <button id="empty-choose" class="primary">Choose videos</button>
           </div>
+          <div id="blank-preview" class="blank-preview"></div>
           <video id="preview" playsinline preload="metadata"></video>
+          <div id="text-overlay" class="text-overlay"></div>
         </div>
 
+      </section>
+
+      <aside class="controls-panel">
+        <h2>Playback</h2>
         <div class="transport">
           <button id="rewind" class="round" title="Go to start">↶</button>
           <button id="play" class="play-button" title="Play / pause (Space)">▶</button>
@@ -50,6 +57,7 @@
           <span class="time"><strong id="current-time">0:00</strong> / <span id="duration">0:00</span></span>
         </div>
 
+        <h2>Sound</h2>
         <section class="audio-controls" aria-label="Audio controls">
           <label>Video audio <input id="video-volume" type="range" min="0" max="1" step="0.05" value="1"></label>
           <label class="check"><input id="video-mute" type="checkbox"> Mute</label>
@@ -57,15 +65,22 @@
           <label>Added audio <input id="music-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
           <label class="check"><input id="music-mute" type="checkbox"> Mute</label>
         </section>
+        <div class="voice-controls"><button id="record-voice">● Record voice-over</button><button id="stop-voice" disabled>Stop recording</button><span id="voice-status"></span></div>
+        <h2>Selected clip</h2>
         <section id="clip-editor" class="clip-editor" aria-label="Selected clip controls" hidden>
           <div class="clip-editor-title"><strong id="selected-name">Selected clip</strong><span id="selected-length"></span></div>
           <label>Start <input id="trim-start-input" type="number" min="0" step="0.1"> sec</label>
           <label>End <input id="trim-end-input" type="number" min="0" step="0.1"> sec</label>
-          <label>Speed <select id="clip-speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1">Normal</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+          <label>Speed <select id="clip-speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1">Normal</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option><option value="5">5×</option><option value="8">8×</option><option value="10">10×</option></select></label>
           <button id="rotate-left" title="Rotate left 90 degrees">↶ Rotate</button>
           <button id="rotate-right" title="Rotate right 90 degrees">Rotate ↷</button>
+          <label class="full-label">Overlay text <input id="overlay-text" type="text" maxlength="120" placeholder="Optional title or caption"></label>
+          <label>Text color <input id="overlay-color" type="color" value="#ffffff"></label>
+          <label>Text size <input id="overlay-size" type="range" min="20" max="96" step="2" value="48"></label>
+          <label id="background-control">Background <input id="clip-background" type="color" value="#111827"></label>
         </section>
-      </section>
+        <button id="add-blank" class="wide-button">＋ Add blank scene</button>
+      </aside>
     </section>
 
     <section class="timeline-section">
@@ -115,6 +130,18 @@
       <div id="export-status" class="export-status" hidden><progress id="export-progress" max="1" value="0"></progress><span id="export-message">Preparing…</span></div>
       <div class="dialog-actions"><button id="export-cancel" value="cancel">Cancel</button><button id="export-start" type="button" class="primary">Export video</button></div>
       <p class="fine-print">MP4 uses the browser's native H.264/AAC recorder when available. If this browser cannot create MP4, choose WebM or use a newer Chrome/Edge version.</p>
+    </form>
+  </dialog>
+
+  <dialog id="help-dialog">
+    <form method="dialog" class="dialog-content help-content">
+      <h2>Using My Movie Maker</h2>
+      <p><strong>Add media:</strong> use the + button in Your media, then click the small + beside a file to place it on the timeline. Drag clips to reorder them.</p>
+      <p><strong>Edit:</strong> select a timeline clip. The right ribbon exposes trim times, speed, rotation, overlay text, split, and delete. Drag a clip's pale end handles for quick trimming.</p>
+      <p><strong>Voice-over:</strong> put the playhead where narration should begin, click Record voice-over, and speak while the movie plays. Recording replaces the current added-audio track.</p>
+      <p><strong>Files:</strong> MP4/WebM video and MP3/WAV/M4A/OGG audio generally work when their codecs are supported by Chrome or Edge. Media never leaves your computer. Project JSON saves edit instructions, so source files must be reconnected when reopening.</p>
+      <p><strong>Export:</strong> MP4 depends on the browser's native H.264 support; WebM is the fallback.</p>
+      <div class="dialog-actions"><button value="close" class="primary">Got it</button></div>
     </form>
   </dialog>
 
