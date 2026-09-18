@@ -1,0 +1,13 @@
+import { timelineAt, ProjectStore } from './project.js';
+export class PreviewController extends EventTarget{
+  constructor(video,audio,store,library){super();this.video=video;this.audio=audio;this.store=store;this.library=library;this.time=0;this.playing=false;this.last=0;this.raf=0;video.addEventListener('ended',()=>this.advance());}
+  syncVolumes(){const s=this.store.state;this.video.volume=s.videoVolume;this.video.muted=s.videoMuted;this.audio.volume=s.musicVolume;this.audio.muted=s.musicMuted}
+  seek(time,autoplay=this.playing){this.time=Math.max(0,Math.min(time,this.store.duration));const hit=timelineAt(this.store.state,this.time);if(!hit){this.video.removeAttribute('src');this.emit();return}const asset=this.library.get(hit.clip.assetId);if(!asset){this.pause();this.emit();return}if(this.video.src!==asset.url)this.video.src=asset.url;this.video.currentTime=hit.local;this.currentId=hit.clip.id;this.syncMusic();if(autoplay)this.video.play().catch(()=>this.pause());this.emit()}
+  play(){if(!this.store.state.clips.length)return;if(this.time>=this.store.duration-.01)this.time=0;this.playing=true;this.seek(this.time,true);this.last=performance.now();this.tick();}
+  pause(){this.playing=false;this.video.pause();this.audio.pause();cancelAnimationFrame(this.raf);this.emit()}
+  toggle(){this.playing?this.pause():this.play()}
+  tick=()=>{if(!this.playing)return;const now=performance.now();this.time=Math.min(this.store.duration,this.time+(now-this.last)/1000);this.last=now;const hit=timelineAt(this.store.state,this.time);if(!hit||this.time>=this.store.duration){this.pause();this.time=this.store.duration;this.emit();return}if(hit.clip.id!==this.currentId)this.seek(this.time,true);this.syncMusic();this.emit();this.raf=requestAnimationFrame(this.tick)}
+  advance(){if(this.playing)this.seek(this.time,true)}
+  syncMusic(){const a=this.store.state.audio;if(!a){this.audio.pause();return}const asset=this.library.get(a.assetId),local=a.in+this.time-a.start;if(!asset||local<a.in||local>=a.out){this.audio.pause();return}if(this.audio.src!==asset.url)this.audio.src=asset.url;if(Math.abs(this.audio.currentTime-local)>.25)this.audio.currentTime=local;this.syncVolumes();if(this.playing&&this.audio.paused)this.audio.play().catch(()=>{});}
+  emit(){this.dispatchEvent(new CustomEvent('time',{detail:this.time}))}
+}

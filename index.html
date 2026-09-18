@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111827">
+  <title>Python Movie Maker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">▶</span><span>Python Movie Maker</span></div>
+    <nav class="file-actions" aria-label="Project controls">
+      <button id="new-project">New</button>
+      <button id="open-project">Open project</button>
+      <button id="save-project">Save project</button>
+      <span class="divider"></span>
+      <button id="undo" title="Undo (Ctrl+Z)" disabled>Undo</button>
+      <button id="redo" title="Redo (Ctrl+Y)" disabled>Redo</button>
+    </nav>
+    <button id="export-open" class="primary">Export video</button>
+    <input id="project-input" type="file" accept="application/json,.json" hidden>
+  </header>
+
+  <main id="drop-zone">
+    <section class="workspace">
+      <aside class="media-panel">
+        <div class="panel-heading"><h2>Your media</h2><button id="import-media" class="icon-button" title="Import media">＋</button></div>
+        <p class="hint">Add videos or one music track. Files stay on this device.</p>
+        <button id="choose-files" class="wide-button">Choose files</button>
+        <input id="media-input" type="file" accept="video/*,audio/*" multiple hidden>
+        <div id="media-list" class="media-list" aria-live="polite"></div>
+      </aside>
+
+      <section class="editor">
+        <div class="preview-wrap">
+          <div id="empty-preview" class="empty-preview">
+            <div class="empty-icon">▶</div>
+            <h1>Make a movie</h1>
+            <p>Drop video files here or choose them from your computer.</p>
+            <button id="empty-choose" class="primary">Choose videos</button>
+          </div>
+          <video id="preview" playsinline preload="metadata"></video>
+        </div>
+
+        <div class="transport">
+          <button id="rewind" class="round" title="Go to start">↶</button>
+          <button id="play" class="play-button" title="Play / pause (Space)">▶</button>
+          <button id="split" title="Split selected clip at playhead">Split</button>
+          <span class="time"><strong id="current-time">0:00</strong> / <span id="duration">0:00</span></span>
+        </div>
+
+        <section class="audio-controls" aria-label="Audio controls">
+          <label>Video audio <input id="video-volume" type="range" min="0" max="1" step="0.05" value="1"></label>
+          <label class="check"><input id="video-mute" type="checkbox"> Mute</label>
+          <span class="separator"></span>
+          <label>Added audio <input id="music-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+          <label class="check"><input id="music-mute" type="checkbox"> Mute</label>
+        </section>
+      </section>
+    </section>
+
+    <section class="timeline-section">
+      <div class="timeline-toolbar">
+        <h2>Timeline</h2>
+        <span id="selection-help">Select a clip to trim, split, or delete it.</span>
+        <button id="delete-clip" class="danger-text" disabled>Delete selected</button>
+      </div>
+      <div id="timeline-scroll" class="timeline-scroll">
+        <div id="timeline" class="timeline">
+          <div id="ruler" class="ruler"></div>
+          <div class="track-row"><div class="track-label">VIDEO</div><div id="video-track" class="track video-track"></div></div>
+          <div class="track-row"><div class="track-label">AUDIO</div><div id="audio-track" class="track audio-track"></div></div>
+          <div id="playhead" class="playhead" aria-hidden="true"><span></span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="drop-overlay" class="drop-overlay"><div>Drop media to add it</div></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="relink-dialog">
+    <form method="dialog" class="dialog-content">
+      <h2>Reconnect your media</h2>
+      <p>Browsers do not store access to your local files in project JSON. Choose the listed files to continue.</p>
+      <ul id="missing-list"></ul>
+      <button id="relink-files" type="button">Choose media files</button>
+      <input id="relink-input" type="file" accept="video/*,audio/*" multiple hidden>
+      <div class="dialog-actions"><button value="cancel">Done</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="export-dialog">
+    <form method="dialog" class="dialog-content">
+      <h2>Export your movie</h2>
+      <p>The movie plays once while it is rendered. Keep this tab visible.</p>
+      <label>Resolution
+        <select id="export-resolution"><option value="original">Original (up to 1080p)</option><option value="1080">1080p</option><option value="720">720p</option></select>
+      </label>
+      <label>Quality
+        <select id="export-quality"><option value="normal">Normal</option><option value="high">High</option></select>
+      </label>
+      <div id="export-status" class="export-status" hidden><progress id="export-progress" max="1" value="0"></progress><span id="export-message">Preparing…</span></div>
+      <div class="dialog-actions"><button id="export-cancel" value="cancel">Cancel</button><button id="export-start" type="button" class="primary">Export WebM</button></div>
+      <p class="fine-print">Chrome and Edge can reliably create WebM in-browser. MP4 export needs a larger codec engine and is planned as an optional extension.</p>
+    </form>
+  </dialog>
+
+  <audio id="music-preview" preload="metadata"></audio>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

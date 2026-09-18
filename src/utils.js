@@ -1,0 +1,5 @@
+export const uid = () => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+export function formatTime(seconds = 0) { seconds = Math.max(0, Number(seconds) || 0); const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=Math.floor(seconds%60); return h ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`; }
+export const clamp = (n,min,max) => Math.min(max,Math.max(min,n));
+export function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+export function mediaMetadata(file){return new Promise((resolve,reject)=>{const el=document.createElement(file.type.startsWith('audio/')?'audio':'video');const url=URL.createObjectURL(file);el.preload='metadata';el.onloadedmetadata=()=>{const data={duration:el.duration,width:el.videoWidth||0,height:el.videoHeight||0};URL.revokeObjectURL(url);resolve(data)};el.onerror=()=>{URL.revokeObjectURL(url);reject(new Error(`“${file.name}” could not be read. Its codec may not be supported by this browser.`))};el.src=url;});}
