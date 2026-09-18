@@ -1,4 +1,4 @@
-Test it out: https://mechengineermike.github.io/SwodniwMovieMaker/
+Test it out: https://mechengineermike.github.io/MyMovieMaker/
 
 # My Movie Maker
 
