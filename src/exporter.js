@@ -49,7 +49,7 @@ export class BrowserExporter {
         if (Math.abs(video.currentTime - hit.local) > .3) video.currentTime = hit.local;
         const rotation = clip.rotation || 0, swap = Math.abs(rotation % 180) === 90;
         const sourceWidth = video.videoWidth || width, sourceHeight = video.videoHeight || height;
-        const fit = Math.min(width / (swap ? sourceHeight : sourceWidth), height / (swap ? sourceWidth : sourceHeight));
+        const fit = Math.min((width - 4) / (swap ? sourceHeight : sourceWidth), (height - 4) / (swap ? sourceWidth : sourceHeight));
         ctx.save(); ctx.translate(width / 2, height / 2); ctx.rotate(rotation * Math.PI / 180);
         ctx.drawImage(video, -sourceWidth * fit / 2, -sourceHeight * fit / 2, sourceWidth * fit, sourceHeight * fit); ctx.restore();
       } else video.pause();
